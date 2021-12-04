@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.js"></script>
+</head>
+<body>
+    <div id = "outline">
+        <div id = "historyDiv">
+            <button id = "historyBtnInsideDiv" class = "material-icons-outlined">
+                <span>history</span>
+            </button>
+            <p>Your calculations and results appear here so that you can reuse them</p>
+        </div>
+        <div id = "result" class = "content">
+            <div id = "answer-outer-div">
+                <button id = "history">
+                    <span class="material-icons-outlined">
+                        history
+                    </span>
+                </button>
+                <div id = "current-answer"></div>  
+            </div>
+
+            
+            <div id = "current-calculation">0</div>
+        </div>
+        <div id = "calculator-buttons" class = "content">
+            <div id = "unit">
+                <button id = "radian">Rad</button>
+                <button id = "degree">Deg</button>
+            </div>
+            
+            <button class = "on">x!</button>
+            <button class = "on">(</button>
+            <button class = "on">)</button>
+            <button class = "on">%</button>
+            <button class = "on">CE</button>
+
+
+            <button class = "on">Inv</button>
+            <button class = "on">sin</button>
+            <button class = "on">ln</button>
+            <button class = "number on">7</button>
+            <button class = "number on">8</button>
+            <button class = "number on">9</button>
+            <button class = "operator on">&div;</button>
+
+            <button class = "on">&#960;</button>
+            <button class = "on">cos</button>
+            <button class = "on">log</button>
+            <button class = "number on">4</button>
+            <button class = "number on">5</button>
+            <button class = "number on">6</button>
+            <button class = "operator on">&times;</button>
+
+
+            <button class = "on">e</button>
+            <button class = "on">tan</button>
+            <button class = "on">&Sqrt;</button>
+            <button class = "number on">1</button>
+            <button class = "number on">2</button>
+            <button class = "number on">3</button>
+            <button class = "operator on">&minus;</button>
+
+            <button class = "on">Ans</button>
+            <button class = "on">EXP</button>
+            <button>x&#8319;</button>
+            <button class = "number on">0</button>
+            <button class = "number on">.</button>
+            <button id = "equal">&equals;</button>
+            <button class = "operator on">&plus;</button>
+        </div>
+    </div>
+    
+    <script src = "script.js"></script>
+    
+</body>
+</html>
