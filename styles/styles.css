@@ -50,6 +50,7 @@ body{
     padding: 2px 0;
     display: flex;
     justify-content: flex-end;
+    overflow: hidden;
 }
 
 #current-calculation{
@@ -59,6 +60,7 @@ body{
     justify-content: flex-end;
     align-items: center;
     height: 35px;
+    overflow: hidden;
 }
 
 #history{
@@ -160,14 +162,17 @@ button:hover{
 #historyDiv{
     position: absolute;
     background-color: white;
-    height: max(400px, max-content);
+    height: 150px;
+    max-height: 400px;
     transform: translate(-15px, 15px);
-    width: 70%;
+    width: 80%;
     padding: 10px;
     border-radius: 10px;
     border: 1px solid gray;
     box-shadow: 2px 2px 8px black;
     display: none;
+    overflow-y: scroll;
+    
     
 }
 
@@ -176,6 +181,8 @@ button:hover{
     color: blue;
     background-color: white;
     box-shadow: none;
+    position: absolute;
+    z-index: 10;
 }
 
 #historyDiv>p{
@@ -185,6 +192,8 @@ button:hover{
     font-size: 18px;
     color: gray;
     margin-bottom: 20px;
+    position: relative;
+    transform: translateY(40px);
 }
 
 
