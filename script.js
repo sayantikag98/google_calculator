@@ -22,6 +22,7 @@ const powerBtn = document.querySelector(".power");
 const radian = document.querySelector("#radian");
 const degree = document.querySelector("#degree");
 const percentage = document.querySelector("#percent");
+const factorial = document.querySelector(".fact");
 
 
 inverse.setAttribute("style","backgroundColor:red")
@@ -69,7 +70,7 @@ number.forEach(ele => {
             numInput="";
             exp="";
         }
-        else if(numInput.charAt(numInput.length - 1) === "%"){
+        else if((numInput.charAt(numInput.length - 1) === "%") || (numInput.charAt(numInput.length - 1) === "!")){
             numInput+=String.fromCharCode(215);
             exp+="*";
         }
@@ -96,7 +97,9 @@ operator.forEach(ele => {
             numInput+="0";
             exp+="0";
         }
-        if(numInput.length>0 && ((!Number.isNaN(Number(numInput.charAt(numInput.length - 1)))) || (numInput.charAt(numInput.length - 1) === "=") || (numInput.charAt(numInput.length - 1) === "%"))){
+        if(numInput.length>0 && ((!Number.isNaN(Number(numInput.charAt(numInput.length - 1)))) || 
+        (numInput.charAt(numInput.length - 1) === "=") || (numInput.charAt(numInput.length - 1) === "%") || 
+        (numInput.charAt(numInput.length - 1) === "!"))){
             if(numInput.length > 0 && numInput.charAt(numInput.length - 1) === "="){
                 exp = ans;
                 numInput = ans;
@@ -164,7 +167,6 @@ equal.addEventListener("click", () => {
         if(clear.textContent === "CE"){
             clear.textContent = "AC";
         }
-        console.log(clear);
     }
 
 });
@@ -196,7 +198,6 @@ clear.addEventListener("click", () => {
 
 inverse.addEventListener("click", () => {
     const invColor = inverse.getAttribute("style").substring(16);
-    console.log(invColor);
     if(invColor === "red")
         inverse.setAttribute("style","backgroundColor:red");
     else
@@ -211,17 +212,21 @@ inverse.addEventListener("click", () => {
     powerBtn.innerHTML = powerBtn.innerHTML.charCodeAt(0) === 120 ? "n".sup()+String.fromCharCode(8730)+"x" : String.fromCharCode(120);
 });
 
-// radian
+// degree
 
 degree.addEventListener("click", () => {
     radian.disabled = false;
     degree.disabled = true;
 });
 
+// radian
+
 radian.addEventListener("click", () => {
     radian.disabled = true;
     degree.disabled = false;
 });
+
+//  percentage
 
 percentage.addEventListener("click", () => {
     if(numInput.length === 0){
@@ -235,6 +240,23 @@ percentage.addEventListener("click", () => {
     }
     numInput+=percentage.textContent;
     exp+=percentage.textContent;
+    currentCalculations.textContent = numInput;
+});
+
+// factorial
+
+factorial.addEventListener("click", () => {
+    if(numInput.length === 0){
+        numInput+="0";
+        exp+="0";
+    }
+    else if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
+        numInput = ans;
+        exp = ans;
+        currentAns.textContent = `Ans = ${ans}`;
+    }
+    numInput+=factorial.textContent.charAt(1);
+    exp+=factorial.textContent.charAt(1);
     currentCalculations.textContent = numInput;
 });
 
