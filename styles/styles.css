@@ -21,7 +21,7 @@ body{
 }
 
 #result{
-    height: 23%;
+    height: 25%;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -59,7 +59,7 @@ body{
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    height: 35px;
+    height: 50px;
     overflow: hidden;
 }
 

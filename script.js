@@ -23,6 +23,10 @@ const radian = document.querySelector("#radian");
 const degree = document.querySelector("#degree");
 const percentage = document.querySelector("#percent");
 const factorial = document.querySelector(".fact");
+const openingBraces = document.querySelector("#opening-braces");
+const closingBraces = document.querySelector("#closing-braces");
+const pieBtn = document.querySelector(".pie");
+const exponentBtn = document.querySelector(".exponent");
 
 
 inverse.setAttribute("style","backgroundColor:red")
@@ -31,6 +35,9 @@ let decimalCount = 0;
 let numInput = "";
 let exp = "";
 let ans = 0;
+let noOfOpeningBraces = 0;
+let noOfClosingBraces = 0;
+let isError = false;
 // numInput is for displaying on screen and exp is for the expression to evaluate
 
 // history
@@ -43,6 +50,15 @@ historyBtnInsideDiv.addEventListener("click", () => {
     historyDiv.style.display = "none";
 });
 
+outlineDiv.forEach(ele => {
+    ele.addEventListener("click", () => {
+        if(historyDiv.style.display === "block")
+            historyDiv.style.display = "none";
+    });
+});
+
+// for ans = 0 on the first click
+
 ansOnState.forEach(ele => {
     ele.addEventListener("click", () => {
         if(clear.textContent === "AC"){
@@ -54,12 +70,7 @@ ansOnState.forEach(ele => {
     });
 });
 
-outlineDiv.forEach(ele => {
-    ele.addEventListener("click", () => {
-        if(historyDiv.style.display === "block")
-            historyDiv.style.display = "none";
-    });
-});
+
 
 // operands
 
@@ -70,10 +81,15 @@ number.forEach(ele => {
             numInput="";
             exp="";
         }
-        else if((numInput.charAt(numInput.length - 1) === "%") || (numInput.charAt(numInput.length - 1) === "!")){
+
+        // if an operator is passed just after the operand then a multiply operator is appended
+        else if((numInput.charAt(numInput.length - 1) === "%") || (numInput.charAt(numInput.length - 1) === "!")
+        || (numInput.charAt(numInput.length - 1) === ")") || (numInput.charAt(numInput.length - 1) === String.fromCharCode(960))){
             numInput+=String.fromCharCode(215);
             exp+="*";
         }
+
+        // to check for the number of decimal points in an operand
         if(ele.textContent === ".")
             decimalCount++;
 
@@ -97,9 +113,12 @@ operator.forEach(ele => {
             numInput+="0";
             exp+="0";
         }
+
         if(numInput.length>0 && ((!Number.isNaN(Number(numInput.charAt(numInput.length - 1)))) || 
         (numInput.charAt(numInput.length - 1) === "=") || (numInput.charAt(numInput.length - 1) === "%") || 
-        (numInput.charAt(numInput.length - 1) === "!"))){
+        (numInput.charAt(numInput.length - 1) === "!") || (numInput.charAt(numInput.length - 1) === ")") || 
+        (numInput.charAt(numInput.length - 1) === String.fromCharCode(960)) || (numInput.charAt(numInput.length - 1) === String.fromCharCode(101))
+        )){
             if(numInput.length > 0 && numInput.charAt(numInput.length - 1) === "="){
                 exp = ans;
                 numInput = ans;
@@ -131,42 +150,82 @@ operator.forEach(ele => {
 
 equal.addEventListener("click", () => {
     if(numInput.length > 0 && numInput.charAt(numInput.length - 1) !== "="){
-        ans = math.evaluate(exp);
         
-        historyPara.style.display = "none";
-        const calcHistMostOuterDiv = document.createElement("div");
-        const calcHistOuterDiv = document.createElement("div");
-        const calcHistExpDiv = document.createElement("div");
-        const calcHistEqualDiv = document.createElement("div");
-        const calcHistAnsDiv = document.createElement("div");
+        // if the opening braces are more than the closing braces then the required number of closing braces 
+        // are appended automatically
+
+        if(noOfOpeningBraces>0 && noOfOpeningBraces>noOfClosingBraces){
+            const bracesLeft = noOfOpeningBraces - noOfClosingBraces;
+            for(let i = 0; i < bracesLeft; i++){
+                numInput+=")";
+                exp+=")";
+                noOfClosingBraces++;
+            }
+        }
+
+
+        try{
+            isError = false;
+            ans = math.evaluate(exp);
+            
+        }
+        catch(err){
+            isError = true;
+
+        }
+        finally{
+            historyPara.style.display = "none";
+            const calcHistMostOuterDiv = document.createElement("div");
+            const calcHistOuterDiv = document.createElement("div");
+            const calcHistExpDiv = document.createElement("div");
+            const calcHistEqualDiv = document.createElement("div");
+            const calcHistAnsDiv = document.createElement("div");
+            
+            if((historyDiv.lastElementChild.nodeName === "P")||(historyDiv.lastElementChild.nodeName === "DIV" && historyDiv.lastElementChild.firstElementChild.textContent !== numInput)){
+                calcHistEqualDiv.textContent = "=";
+                calcHistExpDiv.textContent = numInput;
+                calcHistAnsDiv.textContent = ans;
+                calcHistOuterDiv.appendChild(calcHistExpDiv);
+                calcHistOuterDiv.appendChild(calcHistEqualDiv);
+                calcHistOuterDiv.appendChild(calcHistAnsDiv);
+                calcHistMostOuterDiv.appendChild(calcHistOuterDiv);
+                historyDiv.appendChild(calcHistOuterDiv);
         
-        if((historyDiv.lastElementChild.nodeName === "P")||(historyDiv.lastElementChild.nodeName === "DIV" && historyDiv.lastElementChild.firstElementChild.textContent !== numInput)){
-            calcHistEqualDiv.textContent = "=";
-            calcHistExpDiv.textContent = numInput;
-            calcHistAnsDiv.textContent = ans;
-            calcHistOuterDiv.appendChild(calcHistExpDiv);
-            calcHistOuterDiv.appendChild(calcHistEqualDiv);
-            calcHistOuterDiv.appendChild(calcHistAnsDiv);
-            calcHistMostOuterDiv.appendChild(calcHistOuterDiv);
-            historyDiv.appendChild(calcHistOuterDiv);
+                calcHistOuterDiv.setAttribute("style", "display:flex;alignItems:center;position:relative;top:50px;marginRight:20px;")
+                calcHistExpDiv.setAttribute("style", "border:1px solid gray;padding:10px;borderRadius:10px;color:blue;margin:10px;");
+                calcHistAnsDiv.setAttribute("style", "border:1px solid gray;padding:10px;borderRadius:10px;color:blue;margin:10px;");
+                calcHistEqualDiv.setAttribute("style", "fontSize:40px;margin:10px 0;padding:10px;");
+                calcHistMostOuterDiv.setAttribute("style", "position:relative;overflowY:scroll;height:200px;top:(100px);")
+            }
+            
     
-            calcHistOuterDiv.setAttribute("style", "display:flex;alignItems:center;position:relative;top:50px;marginRight:20px;")
-            calcHistExpDiv.setAttribute("style", "border:1px solid gray;padding:10px;borderRadius:10px;color:blue;margin:10px;");
-            calcHistAnsDiv.setAttribute("style", "border:1px solid gray;padding:10px;borderRadius:10px;color:blue;margin:10px;");
-            calcHistEqualDiv.setAttribute("style", "fontSize:40px;margin:10px 0;padding:10px;");
-            calcHistMostOuterDiv.setAttribute("style", "position:relative;overflowY:scroll;height:200px;top:(100px);")
+            if(!isError){
+                currentCalculations.textContent = ans;
+                numInput+=" =";
+                currentAns.textContent = numInput;
+            }
+            else{
+                currentCalculations.textContent = "Error";
+                numInput+=" =";
+                currentAns.textContent = numInput;
+                numInput = "";
+                exp = "";
+                ans = 0;
+            }
+            
+            
+            decimalCount = 0;
+            noOfClosingBraces = 0;
+            noOfOpeningBraces = 0;
+    
+            if(clear.textContent === "CE"){
+                clear.textContent = "AC";
+            }
         }
+
         
-
-
-        numInput+=" =";
-        currentAns.textContent = numInput;
-        currentCalculations.textContent = ans;
-        decimalCount = 0;
-
-        if(clear.textContent === "CE"){
-            clear.textContent = "AC";
-        }
+        
+       
     }
 
 });
@@ -209,7 +268,7 @@ inverse.addEventListener("click", () => {
     tanBtn.innerHTML = tanBtn.innerHTML === "tan" ? "tan"+"-1".sup() : "tan";
     sqrtBtn.innerHTML = sqrtBtn.innerHTML.charCodeAt(0) === 8730 ? "x"+"2".sup() : String.fromCharCode(8730);
     ansBtn.innerHTML = ansBtn.innerHTML === "Ans" ? "Rnd" : "Ans";
-    powerBtn.innerHTML = powerBtn.innerHTML.charCodeAt(0) === 120 ? "n".sup()+String.fromCharCode(8730)+"x" : String.fromCharCode(120);
+    powerBtn.innerHTML = powerBtn.innerHTML.charCodeAt(0) === 120 ? "n".sup()+String.fromCharCode(8730)+"x" : String.fromCharCode(120)+"n".sup();
 });
 
 // degree
@@ -238,9 +297,12 @@ percentage.addEventListener("click", () => {
         exp = ans;
         currentAns.textContent = `Ans = ${ans}`;
     }
-    numInput+=percentage.textContent;
-    exp+=percentage.textContent;
-    currentCalculations.textContent = numInput;
+    if(numInput.length>0 && numInput.charAt(numInput.length - 1) !== "("){
+        numInput+=percentage.textContent;
+        exp+=percentage.textContent;
+        currentCalculations.textContent = numInput;
+    }
+    
 });
 
 // factorial
@@ -260,4 +322,178 @@ factorial.addEventListener("click", () => {
     currentCalculations.textContent = numInput;
 });
 
+
+// opening braces
+
+openingBraces.addEventListener("click", () => {
+    if(numInput.length === 0){
+        currentAns.textContent = `Ans = ${ans}`;
+    }
+    noOfOpeningBraces++;
+    numInput+=openingBraces.textContent;
+    exp+=openingBraces.textContent;
+    currentCalculations.textContent = numInput;
+
+});
+
+// closing braces
+
+closingBraces.addEventListener("click", () => {
+    // closing braces should not be more than the opening braces and not allowing empty opening and closing braces
+    if(noOfOpeningBraces>noOfClosingBraces && (numInput.length>0 && numInput.charAt(numInput.length - 1) !== "(")){
+        noOfClosingBraces++;
+        numInput+=closingBraces.textContent;
+        exp+=closingBraces.textContent;
+        currentCalculations.textContent = numInput;
+    }
+});
+
+
+// sin and sin^-1
+
+function trigoCompute(btn, val){
+    if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
+        numInput = "";
+        exp = "";
+        currentAns.textContent = `Ans = ${ans}`;
+    }
+    if(btn.textContent === val){
+        numInput+=btn.textContent;
+        exp+=btn.textContent;
+    }
+    else{
+        numInput+="arc";
+        numInput+=val;
+        exp+="arc";
+        exp+=val;
+    }
+    noOfOpeningBraces++;
+    numInput+="(";
+    exp+="(";
+    currentCalculations.textContent = numInput;
+}
+
+// sin and sin^-1
+
+sinBtn.addEventListener("click", () => {
+    trigoCompute(sinBtn, "sin");
+});
+
+// cos and cos^-1
+
+cosBtn.addEventListener("click", () => {
+    trigoCompute(cosBtn, "cos");
+});
+
+// tan and tan^-1
+
+tanBtn.addEventListener("click", () => {
+    trigoCompute(tanBtn, "tan");
+});
+
+// ln and e^x
+
+lnBtn.addEventListener("click", () => {
+    if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
+        numInput = "";
+        exp = "";
+        currentAns.textContent = `Ans = ${ans}`;
+    }
+    if(lnBtn.textContent === "ln"){
+        numInput+=lnBtn.textContent;
+        exp+="log";
+        noOfOpeningBraces++;
+        numInput+="(";
+        exp+="(";
+        currentCalculations.textContent = numInput;
+    }
+    else{
+        numInput+=lnBtn.textContent.charAt(0);
+        exp+=lnBtn.textContent.charAt(0);
+        numInput+="^";
+        exp+="^";
+        currentCalculations.textContent = numInput;
+    }
+});
+
+// log and 10^x
+
+logBtn.addEventListener("click", () => {
+    if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
+        numInput = "";
+        exp = "";
+        currentAns.textContent = `Ans = ${ans}`;
+    }
+
+    if(logBtn.textContent === "log"){
+        numInput+=logBtn.textContent;
+        exp+=logBtn.textContent;
+        exp+="10";
+        noOfOpeningBraces++;
+        numInput+="(";
+        exp+="(";
+        currentCalculations.textContent = numInput;
+    }
+    else{
+        numInput+=logBtn.textContent.substring(0,2);
+        exp+=logBtn.textContent.substring(0,2);
+        numInput+="^";
+        exp+="^";
+        currentCalculations.textContent = numInput;
+    }
+});
+
+// ^(1/2) and ^2
+
+sqrtBtn.addEventListener("click", () => {
+    
+    if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
+        numInput = "";
+        exp = "";
+        currentAns.textContent = `Ans = ${ans}`;
+    }
+    const val = numInput;
+
+    if(sqrtBtn.textContent.charCodeAt(0) === 8730){
+        numInput+=sqrtBtn.textContent;
+        numInput+="(";
+        exp+="sqrt";
+        noOfOpeningBraces++;
+    }
+    else{
+        if(ans) numInput+=ans;
+        exp+="square";
+        numInput+="^2";
+    }
+    
+    exp+="(";
+    exp+=val;
+    console.log(exp);
+    currentCalculations.textContent = numInput;
+});
+
+
+
+function constantVal(code, val){
+    if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
+        numInput = "";
+        exp = "";
+        currentAns.textContent = `Ans = ${ans}`;
+    }
+    numInput+=String.fromCharCode(code);
+    exp+= val;
+    currentCalculations.textContent = numInput;
+};
+
+// pie
+
+pieBtn.addEventListener("click", () => {
+    constantVal(960, "PI");
+});
+
+// exponent
+
+exponentBtn.addEventListener("click", () => {
+    constantVal(101, "e")
+});
 
