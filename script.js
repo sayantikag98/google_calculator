@@ -39,6 +39,8 @@ let ans = 0;
 let noOfOpeningBraces = 0;
 let noOfClosingBraces = 0;
 let isError = false;
+let ran = 0;
+let isSqrt = false;
 // numInput is for displaying on screen and exp is for the expression to evaluate
 
 // history
@@ -86,8 +88,8 @@ number.forEach(ele => {
         // if an operator is passed just after the operand then a multiply operator is appended
         else if((numInput.charAt(numInput.length - 1) === "%") || (numInput.charAt(numInput.length - 1) === "!")
         || (numInput.charAt(numInput.length - 1) === ")") || (numInput.charAt(numInput.length - 1) === String.fromCharCode(960)) || 
-        (numInput.charAt(numInput.length - 1) === String.fromCharCode(101)) || (numInput.substring(numInput.length - 3) === "Ans") 
-        // (Number(numInput.substring(numInput.length - 5)) !== NaN)
+        (numInput.charAt(numInput.length - 1) === String.fromCharCode(101)) || (numInput.substring(numInput.length - 3) === "Ans") ||
+        (numInput.endsWith(ran.toString()))
         ){
             numInput+=String.fromCharCode(215);
             exp+="*";
@@ -166,6 +168,7 @@ equal.addEventListener("click", () => {
                 noOfClosingBraces++;
             }
         }
+        console.log(exp);
 
         try{
             isError = false;
@@ -224,10 +227,7 @@ equal.addEventListener("click", () => {
             if(clear.textContent === "CE"){
                 clear.textContent = "AC";
             }
-        }
-
-        
-        
+        }      
        
     }
 
@@ -333,6 +333,11 @@ openingBraces.addEventListener("click", () => {
     if(numInput.length === 0){
         currentAns.textContent = `Ans = ${ans}`;
     }
+    if(numInput.length !== 0){
+        if(Number.isNaN(Number(numInput.charAt(numInput.length - 1))) !== true){
+            exp+="*";
+        }
+    }
     noOfOpeningBraces++;
     numInput+=openingBraces.textContent;
     exp+=openingBraces.textContent;
@@ -349,6 +354,10 @@ closingBraces.addEventListener("click", () => {
         numInput+=closingBraces.textContent;
         exp+=closingBraces.textContent;
         currentCalculations.textContent = numInput;
+        if(isSqrt){
+            exp+="^(1/2)";
+        }
+        isSqrt = false;
     }
 });
 
@@ -360,6 +369,11 @@ function trigoCompute(btn, val){
         numInput = "";
         exp = "";
         currentAns.textContent = `Ans = ${ans}`;
+    }
+    if(numInput.length !== 0){
+        if(Number.isNaN(Number(numInput.charAt(numInput.length - 1))) !== true){
+            exp+="*";
+        }
     }
     if(btn.textContent === val){
         numInput+=btn.textContent;
@@ -449,30 +463,34 @@ logBtn.addEventListener("click", () => {
 
 // ^(1/2) and ^2
 
-sqrtBtn.addEventListener("click", () => {
-    
+sqrtBtn.addEventListener("click", () => { 
     if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
-        numInput = "";
-        exp = "";
+        numInput = ans;
+        exp = ans;
         currentAns.textContent = `Ans = ${ans}`;
     }
-    const val = numInput;
 
     if(sqrtBtn.textContent.charCodeAt(0) === 8730){
+        if(numInput.length !== 0){
+            if(Number.isNaN(Number(numInput.charAt(numInput.length - 1))) !== true){
+                exp+="*";
+            }
+
+        }
+        isSqrt = true;
         numInput+=sqrtBtn.textContent;
         numInput+="(";
-        exp+="sqrt";
+        exp+="(";
         noOfOpeningBraces++;
     }
     else{
-        if(ans) numInput+=ans;
-        exp+="square";
+        if(numInput.length === 0){
+            exp = "0";
+            numInput = "0";
+        }
+        exp+="^2";
         numInput+="^2";
     }
-    
-    exp+="(";
-    exp+=val;
-    console.log(exp);
     currentCalculations.textContent = numInput;
 });
 
@@ -528,7 +546,7 @@ ansBtn.addEventListener("click", () => {
             numInput+=String.fromCharCode(215);
             exp+="*";
         }
-        const ran = math.random();
+        ran = math.random();
         numInput+=ran;
         exp+=ran;
         currentCalculations.textContent = numInput;
@@ -549,21 +567,24 @@ bigExponent.addEventListener("click", () => {
 // nth power
 
 powerBtn.addEventListener("click", () => {
+    if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
+        numInput = ans;
+        exp = ans;
+        currentAns.textContent = `Ans = ${ans}`;
+    }
     if(numInput.length !== 0 && powerBtn.textContent === (String.fromCharCode(120)+String.fromCharCode(8319))){
-        const num = numInput;
-        numInput="";
-        numInput+="(";
-        numInput+=num;
         numInput+="^";
-        exp = "";
-        exp+="pow";
-        exp+="(";
-        exp+=num;
-        exp+=",";
-        noOfOpeningBraces++;
-        console.log(numInput, exp);
+        exp+="^";
         currentCalculations.textContent = numInput;
     }
+
+    else if(numInput.length !== 0 && powerBtn.textContent === (String.fromCharCode(110)+String.fromCharCode(8730)+String.fromCharCode(120))){
+        numInput+="^(1/";
+        exp+="^(1/";
+        noOfOpeningBraces++;
+        currentCalculations.textContent = numInput;
+    }
+
 }); 
 
 
