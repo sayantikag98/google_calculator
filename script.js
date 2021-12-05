@@ -27,6 +27,7 @@ const openingBraces = document.querySelector("#opening-braces");
 const closingBraces = document.querySelector("#closing-braces");
 const pieBtn = document.querySelector(".pie");
 const exponentBtn = document.querySelector(".exponent");
+const bigExponent = document.querySelector(".big-exponent");
 
 
 inverse.setAttribute("style","backgroundColor:red")
@@ -84,7 +85,10 @@ number.forEach(ele => {
 
         // if an operator is passed just after the operand then a multiply operator is appended
         else if((numInput.charAt(numInput.length - 1) === "%") || (numInput.charAt(numInput.length - 1) === "!")
-        || (numInput.charAt(numInput.length - 1) === ")") || (numInput.charAt(numInput.length - 1) === String.fromCharCode(960))){
+        || (numInput.charAt(numInput.length - 1) === ")") || (numInput.charAt(numInput.length - 1) === String.fromCharCode(960)) || 
+        (numInput.charAt(numInput.length - 1) === String.fromCharCode(101)) || (numInput.substring(numInput.length - 3) === "Ans") 
+        // (Number(numInput.substring(numInput.length - 5)) !== NaN)
+        ){
             numInput+=String.fromCharCode(215);
             exp+="*";
         }
@@ -117,7 +121,7 @@ operator.forEach(ele => {
         if(numInput.length>0 && ((!Number.isNaN(Number(numInput.charAt(numInput.length - 1)))) || 
         (numInput.charAt(numInput.length - 1) === "=") || (numInput.charAt(numInput.length - 1) === "%") || 
         (numInput.charAt(numInput.length - 1) === "!") || (numInput.charAt(numInput.length - 1) === ")") || 
-        (numInput.charAt(numInput.length - 1) === String.fromCharCode(960)) || (numInput.charAt(numInput.length - 1) === String.fromCharCode(101))
+        (numInput.charAt(numInput.length - 1) === String.fromCharCode(960)) || (numInput.charAt(numInput.length - 1) === String.fromCharCode(101)) 
         )){
             if(numInput.length > 0 && numInput.charAt(numInput.length - 1) === "="){
                 exp = ans;
@@ -162,7 +166,6 @@ equal.addEventListener("click", () => {
                 noOfClosingBraces++;
             }
         }
-
 
         try{
             isError = false;
@@ -274,6 +277,7 @@ inverse.addEventListener("click", () => {
 // degree
 
 degree.addEventListener("click", () => {
+    console.log(degree.textContent);
     radian.disabled = false;
     degree.disabled = true;
 });
@@ -480,6 +484,10 @@ function constantVal(code, val){
         exp = "";
         currentAns.textContent = `Ans = ${ans}`;
     }
+    else if(numInput.length>0 && numInput.charAt(numInput.length - 1) === String.fromCharCode(code)){
+        numInput+=String.fromCharCode(215);
+        exp+="*";
+    }
     numInput+=String.fromCharCode(code);
     exp+= val;
     currentCalculations.textContent = numInput;
@@ -496,4 +504,70 @@ pieBtn.addEventListener("click", () => {
 exponentBtn.addEventListener("click", () => {
     constantVal(101, "e")
 });
+
+// answer
+
+ansBtn.addEventListener("click", () => {
+    if(numInput.length>0 && numInput.charAt(numInput.length - 1) === "="){
+        numInput = "";
+        exp = "";
+        currentAns.textContent = `Ans = ${ans}`;
+    }
+    if(ansBtn.textContent === "Ans"){
+        if(numInput.length>0 && numInput.substring(numInput.length - 3) === "Ans"){
+            numInput+=String.fromCharCode(215);
+            exp+="*";
+        }
+        numInput+="Ans";
+        exp+=ans;
+        currentCalculations.textContent = numInput;
+        console.log(numInput.substring(numInput.length - 3));
+    }
+    else if(ansBtn.textContent === "Rnd"){
+        if(numInput.length>0){
+            numInput+=String.fromCharCode(215);
+            exp+="*";
+        }
+        const ran = math.random();
+        numInput+=ran;
+        exp+=ran;
+        currentCalculations.textContent = numInput;
+    }
+    
+});
+
+// big exponent
+
+bigExponent.addEventListener("click", () => {
+    if(numInput.length !== 0){
+        numInput+="E";
+        exp+="E";
+        currentCalculations.textContent = numInput;
+    }
+});
+
+// nth power
+
+powerBtn.addEventListener("click", () => {
+    if(numInput.length !== 0 && powerBtn.textContent === (String.fromCharCode(120)+String.fromCharCode(8319))){
+        const num = numInput;
+        numInput="";
+        numInput+="(";
+        numInput+=num;
+        numInput+="^";
+        exp = "";
+        exp+="pow";
+        exp+="(";
+        exp+=num;
+        exp+=",";
+        noOfOpeningBraces++;
+        console.log(numInput, exp);
+        currentCalculations.textContent = numInput;
+    }
+}); 
+
+
+// sin in degree, nth square root
+
+
 
