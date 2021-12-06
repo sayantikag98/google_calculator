@@ -1,3 +1,52 @@
+@media screen and (min-width: 0px) and (max-width: 750px){
+    .hide{
+        display: none;
+    }
+    #calculator-buttons>div:first-child{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding-top: 17px;
+        flex-grow: 1;
+        margin-right: 0;
+        width: 0;
+        
+    }
+    
+    #calculator-buttons>div:last-child{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        padding-top: 17px;
+        flex-grow: 1;
+        width: 100%;
+    }
+
+}
+
+@media screen and (min-width: 751px){
+    #calculator-buttons>div:first-child{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding-top: 17px;
+        flex-grow: 1;
+        margin-right: 10px;
+        width: 45%;
+        
+    }
+    
+    #calculator-buttons>div:last-child{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        padding-top: 17px;
+        flex-grow: 1;
+        width: 55%;
+    }
+
+}
+
 *{
     box-sizing: border-box;
     margin: 0;
@@ -8,6 +57,7 @@ body{
     display: flex;
     justify-content: center;
     padding-top: 30px;
+    min-width: 600px;
 }
 
 
@@ -57,10 +107,19 @@ body{
     width: 100%;
     font-size: 40px;
     display: flex;
-    justify-content: flex-end;
+    /* to make the overflow-x scroll to work for right aligned positioned element */
+    flex-direction: row-reverse;
     align-items: center;
     height: 50px;
-    overflow: hidden;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scrollbar-width: none; /* to hide the scrollbar for overflow scroll for mozilla even though having the scrollable property */
+}
+
+/* to hide the scrollbar for overflow scroll for chrome, safari even though having the scrollable property */
+
+#current-calculation::-webkit-scrollbar{
+    display: none;
 }
 
 #history{
@@ -85,13 +144,10 @@ span{
 }
 
 #calculator-buttons{
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
-    flex-grow: 1;
-    padding-top: 17px;
-    
+    display: flex;  
 }
+
+
 
 button{
     border-radius: 5px;
@@ -102,6 +158,9 @@ button{
     background-color: rgba(128, 128, 128, 0.267);
     box-shadow: none;
     transition: box-shadow 100ms ease-in 10ms;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 button:hover{

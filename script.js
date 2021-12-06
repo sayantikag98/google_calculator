@@ -39,7 +39,7 @@ let ans = 0;
 let noOfOpeningBraces = 0;
 let noOfClosingBraces = 0;
 let isError = false;
-let ran = 0;
+let ran = NaN;
 let isSqrt = false;
 // numInput is for displaying on screen and exp is for the expression to evaluate
 
@@ -88,7 +88,8 @@ number.forEach(ele => {
         // if an operator is passed just after the operand then a multiply operator is appended
         else if((numInput.charAt(numInput.length - 1) === "%") || (numInput.charAt(numInput.length - 1) === "!")
         || (numInput.charAt(numInput.length - 1) === ")") || (numInput.charAt(numInput.length - 1) === String.fromCharCode(960)) || 
-        (numInput.charAt(numInput.length - 1) === String.fromCharCode(101)) || (numInput.substring(numInput.length - 3) === "Ans") ||
+        (numInput.charAt(numInput.length - 1) === String.fromCharCode(101)) || 
+        (numInput.substring(numInput.length - 3) === "Ans") ||
         (numInput.endsWith(ran.toString()))
         ){
             numInput+=String.fromCharCode(215);
@@ -172,8 +173,10 @@ equal.addEventListener("click", () => {
 
         try{
             isError = false;
-            ans = math.evaluate(exp);
-            
+            if(math.evaluate(exp) % 1 === 0)
+                ans = math.evaluate(exp);
+            else 
+                ans = math.evaluate(exp).toFixed(10);    
         }
         catch(err){
             isError = true;
